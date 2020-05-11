@@ -27,5 +27,11 @@ setup(
 			'google-cloud-storage',
 	],
 	author="Kerri Rapes",
-	author_email="kerri.rapes@gmail.com"
+	author_email="kerri.rapes@gmail.com",
+	url='https://github.com/krapes/wiraconcha.git',
+	extras_require = {
+			"dev": [ "check-manifest",
+					 "twine"
+			]
+	}
 	)
