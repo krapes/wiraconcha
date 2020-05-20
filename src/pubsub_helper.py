@@ -4,11 +4,11 @@ from base64 import urlsafe_b64encode, b64decode, urlsafe_b64decode
 import json
 from google.cloud import pubsub
 
-stage = os.environ.get('stage', 'dev')
-logging.debug("Stage: {}".format(stage))
+#stage = os.environ.get('stage', 'dev')
+#logging.debug("Stage: {}".format(stage))
 
 
-def createPublisher(topic):
+def createPublisher(project_id, stage, topic):
 	""" Gets publisher object and event type object for a
 		given topic
 
@@ -23,11 +23,11 @@ def createPublisher(topic):
 	"""
 	publisher = pubsub.PublisherClient()
 	topic = "{}_{}".format(topic, stage)
-	project = os.environ.get('PROJECT', 'calcium-complex-272115')
-	event_type = publisher.topic_path(project, topic)
+	#project = os.environ.get('PROJECT', 'calcium-complex-272115')
+	event_type = publisher.topic_path(project_id, topic)
 
 	publisher.get_topic(event_type)
-	logging.info('Using pub/sub topic {} {}'.format(project, topic))
+	logging.info('Using pub/sub topic {} {}'.format(project_id, topic))
 
 	return publisher, event_type
 
@@ -61,7 +61,6 @@ def publishMessage(publisher, topic_path, data):
 
 def decodeMessage(event):
 	""" dencodes message with b64encode
-
 		Args:
 			event (STRING): String to be decoded
 		Returns:

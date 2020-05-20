@@ -3,13 +3,13 @@ import time
 import os
 from google.cloud import bigquery
 from google.cloud import pubsub
-#import cloudFunction_helper as cloudFunction_helper
+import gcp_helper
 
 
-#cloudFunction_helper.setupLogger()
+gcp_helper.setupLogger()
 client = bigquery.Client()
 stage = os.environ.get('stage', 'local')
-projectID = os.environ.get('PROJECT', 'calcium-complex-272115')
+project_id = gcp_helper.get_project_id()
 destDataset = "empack_raw"
 destDataset_test = "test_destination"
 
@@ -270,14 +270,14 @@ def buildSQL(key, build):
 
 	viewName = key.replace('_V0', '')
 	dataset = destDataset_test if 'test' in key else destDataset
-	master_sql = "CREATE OR REPLACE TABLE `{}.{}.{}` AS \n".format(projectID,
+	master_sql = "CREATE OR REPLACE TABLE `{}.{}.{}` AS \n".format(project_id,
 																	dataset,
 																	viewName)
 	for i, agent in enumerate(build[key]['datasets']):
 		fields = buildFields(build[key]['masterCol'],
 						build[key]['columns'][i])
 		sql_shell = "SELECT \n{},\n'{}' as Agent \nFROM `{}.{}.{}`"
-		sql = sql_shell.format(fields, agent, projectID, agent, key)
+		sql = sql_shell.format(fields, agent, project_id, agent, key)
 		master_sql += sql + '\nUNION ALL\n'
 
 	master_sql = master_sql[:-11] + ';'
@@ -335,7 +335,6 @@ def checkQuery(jobObject):
 
 def stream(table, rows_to_insert, unique_ids):
 	""" Streams rows as an insert to BigQuery
-
 	Args:
 		table (STRING): Object containing response from BigQuery
 		rows_to_insert (LIST of DICT): List of dictionaries containing table
@@ -359,7 +358,6 @@ def stream(table, rows_to_insert, unique_ids):
 
 def get_table(table):
 	""" Returns table object
-
 	Args:
 		table (STRING): table name
 	Returns:
