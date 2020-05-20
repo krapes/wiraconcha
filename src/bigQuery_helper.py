@@ -331,3 +331,36 @@ def checkQuery(jobObject):
 	while jobObject.running():
 		time.sleep(1)
 	return jobObject
+
+
+def stream(table, rows_to_insert, unique_ids):
+	""" Streams rows as an insert to BigQuery
+	Args:
+		table (STRING): Object containing response from BigQuery
+		rows_to_insert (LIST of DICT): List of dictionaries containing table
+										columns and their values to be written
+	"""
+
+	row_ids = []
+	for row in rows_to_insert:
+		idx = ''
+		for col in unique_ids:
+			idx += str(row[col]) + '_'
+		row_ids.append(idx[:-1])
+	logging.info("BigQuery Streaming indexIds/uniqueIds/row_ids: {}".format(row_ids))
+
+	errors = client.insert_rows_json(table, rows_to_insert, row_ids=row_ids)
+	if errors == []:
+		return True
+	else:
+		raise Exception(errors)
+		return False
+
+def get_table(table):
+	""" Returns table object
+	Args:
+		table (STRING): table name
+	Returns:
+		 (OBJECT): BigQuery object for table
+	"""
+	return client.get_table(table)

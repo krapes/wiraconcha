@@ -61,12 +61,14 @@ def publishMessage(publisher, topic_path, data):
 
 def decodeMessage(event):
 	""" dencodes message with b64encode
-
 		Args:
 			event (STRING): String to be decoded
 		Returns:
 			DICT: dencoded data
 	"""
-	data = b64decode(event).decode('utf-8')
-	data = urlsafe_b64decode(data).decode('utf-8')
+	try:
+		data = b64decode(event).decode('utf-8')
+		data = urlsafe_b64decode(data).decode('utf-8')
+	except:
+		data = event.decode('utf-8')
 	return json.loads(data)
