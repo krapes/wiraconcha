@@ -3,13 +3,13 @@ import time
 import os
 from google.cloud import bigquery
 from google.cloud import pubsub
-import helpers.cloudFunction_helper as cloudFunction_helper
+import gcp_helper
 
 
-cloudFunction_helper.setupLogger()
+gcp_helper.setupLogger()
 client = bigquery.Client()
 stage = os.environ.get('stage', 'local')
-project_id = cloudFunction_helper.get_project_id()
+project_id = gcp_helper.get_project_id()
 destDataset = "empack_raw"
 destDataset_test = "test_destination"
 

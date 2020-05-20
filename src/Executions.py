@@ -3,13 +3,9 @@ import sys
 import logging
 import json
 
-function_identity = os.environ.get('FUNCTION_IDENTITY', 'local')
-if function_identity == 'local':
-	sys.path.append(".")
-
-import helpers.bigQuery_helper as bigQuery_helper
-import helpers.cloudFunction_helper as cloudFunction_helper
-import helpers.pubsub_helper as pubsub_helper
+import bigQuery_helper
+import cloudFunction_helper
+import pubsub_helper
 
 
 
