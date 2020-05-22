@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
 	name='wiraconcha',
-	version='0.0.2',
+	version='0.0.3',
 	description='This is a python package with lots of helpful function for working with GCP. Someday, like in the case of the Inca god wiraconcha, it will probably be replaced with Apu',
 	py_modules=['bigQuery_helper', 'gcp_helper', 'pubsub_helper', 'Executions'],
 	package_dir={'':'src'},

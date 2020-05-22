@@ -7,9 +7,9 @@ import gcp_helper
 
 
 gcp_helper.setupLogger()
-client = bigquery.Client()
 stage = os.environ.get('stage', 'local')
 project_id = gcp_helper.get_project_id()
+client = bigquery.Client(project=project_id)
 destDataset = "empack_raw"
 destDataset_test = "test_destination"
 
@@ -226,6 +226,24 @@ def listDatasets():
 	"""
 	datasets = list(client.list_datasets())
 	return datasets
+
+
+def createDataset(name):
+	""" Creates a new dataset in BigQuery if it does not
+		already exists
+
+	Args:
+		name (STRING): Name of the new dataset
+
+	Returns:
+	"""
+	current_sets = [dataset.dataset_id for dataset in listDatasets()]
+	if name not in current_sets:
+		dataset = bigquery.Dataset(f"{project_id}.{name}")
+		dataset = client.create_dataset(dataset)  # Make an API request.
+		logging.info(f"Created dataset {client.project}.{dataset.dataset_id}")
+	else:
+		logging.info(f"Dataset {name} already exists")
 
 
 def buildSQL(key, build):

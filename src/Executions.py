@@ -4,7 +4,6 @@ import logging
 import json
 
 import bigQuery_helper
-import cloudFunction_helper
 import pubsub_helper
 
 
@@ -90,7 +89,7 @@ class Execution():
 		# assigns topic_path
 		self.topic_path = topic_path
 
-	def wait_running(self):
+	def _wait_running(self):
 		""" Waits for BigQuery job to finish executing
 		Args:
 		Returns:
@@ -124,7 +123,7 @@ class Execution():
 																		data))
 
 		try:
-			self.wait_running()
+			self._wait_running()
 			if self.jobObject.error_result:
 				write_data(self.jobObject.error_result)
 				output = 1
@@ -136,7 +135,9 @@ class Execution():
 			output = 1
 
 
-		return output
+		return output, self.jobObject
+
+	
 
 	def start_job(self):
 		""" Starts a BigQuery job by running the master_sql
