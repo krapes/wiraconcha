@@ -64,6 +64,7 @@ class Execution():
 		self.datasets = datasets
 		self.publisher = publisher
 		self.topic_path = topic_path
+		logging.info("Execution object {key} created")
 
 	def assign_jobObject(self, jobObject):
 		# assigns jobObject
@@ -89,7 +90,7 @@ class Execution():
 		# assigns topic_path
 		self.topic_path = topic_path
 
-	def _wait_running(self):
+	def wait_running(self):
 		""" Waits for BigQuery job to finish executing
 		Args:
 		Returns:
@@ -123,7 +124,7 @@ class Execution():
 																		data))
 
 		try:
-			self._wait_running()
+			self.wait_running()
 			if self.jobObject.error_result:
 				write_data(self.jobObject.error_result)
 				output = 1
@@ -145,5 +146,7 @@ class Execution():
 		Returns:
 		"""
 		if self.master_sql is None:
+			logging.critical("master_sql in None")
 			raise Exception
 		self.jobObject = bigQuery_helper.startQuery(self.master_sql)
+		logging.info("Job Started")
