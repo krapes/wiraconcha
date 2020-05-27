@@ -5,6 +5,7 @@ import json
 
 import bigQuery_helper
 import pubsub_helper
+import gcp_helper
 
 
 
@@ -126,7 +127,11 @@ class Execution():
 		try:
 			self.wait_running()
 			if self.jobObject.error_result:
-				write_data(self.jobObject.error_result)
+				if self.publisher is not None and self.topic_path is not None:
+					write_data(self.jobObject.error_result)
+				else:
+					message = f"Table {self.key} has an unmanageable error."
+					gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)
 				output = 1
 			else:
 				logging.info("Table {} Successful".format(self.key))

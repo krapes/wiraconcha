@@ -25,6 +25,9 @@ setup(
 			'google-cloud-core',
 			'google-cloud-pubsub',
 			'google-cloud-storage',
+			'google-cloud-error-reporting',
+			'google-cloud-logging',
+			'googleapis-common-protos'
 	],
 	author="Kerri Rapes",
 	author_email="kerri.rapes@gmail.com",

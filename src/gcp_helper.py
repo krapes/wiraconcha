@@ -1,4 +1,5 @@
 from google.cloud import storage
+from google.cloud import error_reporting
 import os
 import logging
 import sys
@@ -123,3 +124,20 @@ def get_project_id():
 			not the same as your service account project")
 
 	return project_id
+
+
+def raise_bug_error(error, message=''):
+	""" Gets the project ID. It defaults to the project declared in the
+		enviorment variable PROJECT but if it can't find it there it will
+		try looking for a service account and take the project ID from there
+
+		Args: error (Exception): The Exception causing error
+			  message (STRING): A custom message to be preprended to the error
+		Returns:
+	"""
+	msg = f"{message} {str(data["error"])}"
+	if message != '':
+		logging.critical(message)
+	logging.error(msg)
+	# This line sends the error to the "Error Reporting" section of GCP console
+	error_client.report(msg)
