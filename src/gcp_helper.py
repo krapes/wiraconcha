@@ -135,7 +135,7 @@ def raise_bug_error(error, message=''):
 			  message (STRING): A custom message to be preprended to the error
 		Returns:
 	"""
-	msg = f"{message} {str(data["error"])}"
+	msg = f"{message} {str(error)}"
 	if message != '':
 		logging.critical(message)
 	logging.error(msg)
