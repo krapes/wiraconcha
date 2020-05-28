@@ -109,41 +109,41 @@ class Execution():
 			INT: 0 or 1 to indicate if the query was
 				 executed without/with error
 		"""
-		def write_data(error):
+		def write_error(error):
 			""" Writte error event to pubsub
 			Args: error (STRING): a string containing the error message
 			Returns:
 			"""
 			logging.critical("Error with table {}".format(self.key))
-			data = {
-					"table": self.key,
-					"datasets": self.datasets,
-					"error": json.dumps(error),
-					"sql": self.master_sql}
-			pubsub_helper.publishMessage(self.publisher, self.topic_path, data)
-			logging.critical("Published to {} event_data: {}".format(self.topic_path,
-																		data))
+			if self.publisher is not None and self.topic_path is not None:
+				data = {
+						"table": self.key,
+						"datasets": self.datasets,
+						"error": json.dumps(error),
+						"sql": self.master_sql}
+				pubsub_helper.publishMessage(self.publisher, self.topic_path, data)
+				logging.critical("Published to {} event_data: {}".format(self.topic_path,
+			else:
+				message = f"Table {self.key} has an unmanageable error."
+				logging.critical(message)
+				logging.error(message + ' ' + str(self.jobObject.error_result))
+				gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)																data))
 
 		try:
 			self.wait_running()
 			if self.jobObject.error_result:
-				if self.publisher is not None and self.topic_path is not None:
-					write_data(self.jobObject.error_result)
-				else:
-					message = f"Table {self.key} has an unmanageable error."
-					gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)
+				write_error(self.jobObject.error_result)
 				output = 1
 			else:
 				logging.info("Table {} Successful".format(self.key))
 				output = 0
 		except Exception as e:
-			write_data(e.__str__())
+			write_error(e.__str__())
 			output = 1
 
 
 		return output, self.jobObject
 
-	
 
 	def start_job(self):
 		""" Starts a BigQuery job by running the master_sql

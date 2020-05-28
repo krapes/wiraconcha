@@ -5,7 +5,7 @@ import logging
 import sys
 import json
 
-
+error_client = error_reporting.Client()
 
 def download_data(bucket_name, gcs_path, local_path, verbose=False):
 	""" Downloads data from GCP bucket
