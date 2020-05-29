@@ -65,7 +65,7 @@ class Execution():
 		self.datasets = datasets
 		self.publisher = publisher
 		self.topic_path = topic_path
-		logging.info("Execution object {key} created")
+		logging.debug(f"Execution object {key} created")
 
 	def assign_jobObject(self, jobObject):
 		# assigns jobObject
@@ -115,7 +115,7 @@ class Execution():
 			Returns:
 			"""
 			logging.critical("Error with table {}".format(self.key))
-			if self.publisher is not None and self.topic_path is not None:
+			if self.publisher != None and self.topic_path != None:
 				data = {
 						"table": self.key,
 						"datasets": self.datasets,
@@ -123,11 +123,12 @@ class Execution():
 						"sql": self.master_sql}
 				pubsub_helper.publishMessage(self.publisher, self.topic_path, data)
 				logging.critical("Published to {} event_data: {}".format(self.topic_path,
+																		 data))
 			else:
 				message = f"Table {self.key} has an unmanageable error."
 				logging.critical(message)
 				logging.error(message + ' ' + str(self.jobObject.error_result))
-				gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)																data))
+				gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)
 
 		try:
 			self.wait_running()

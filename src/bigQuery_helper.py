@@ -200,7 +200,7 @@ def deleteTable(dataset_id, table_id):
 		return False, e
 
 
-def clearDatasets(datasets):
+def clearDatasets(datasets, exclude=[]):
 	""" Removes all tables in datasets
 
 	Args:
@@ -210,7 +210,8 @@ def clearDatasets(datasets):
 		None
 	"""
 	for dataset in datasets:
-		tables = list(client.list_tables(dataset.dataset_id))
+		acutal_tables = list(client.list_tables(dataset.dataset_id))
+		tables = [t for t in acutal_tables if t not in exclude]
 		for table in tables:
 			table_ref = client.dataset(dataset.dataset_id).table(table.table_id)
 			client.delete_table(table_ref)
