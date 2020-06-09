@@ -146,7 +146,7 @@ def raise_bug_error(error, message=''):
 	error_client.report(msg)
 
 
-def prep_function(func):
+def function_event(func):
 	"""Decorator for logging node execution time and event contents
 
 		Args:
@@ -164,13 +164,6 @@ def prep_function(func):
 
 		logging.info(f"Event: {event}")
 		logging.debug(f"Context: {context}")
-		'''
-		global service, project_id, stage
-		service = os.environ.get('SERVICE', 'MCGMT')
-		stage = os.environ.get('stage', 'dev')
-		project_id = gcp_helper.get_project_id()
-		logging.info(f"Project: {project_id}  Stage: {stage}")
-		'''
 
 		t_start = time.time()
 		result = func(event, context, **kwargs)
@@ -180,3 +173,20 @@ def prep_function(func):
 		return result
 
 	return with_time
+
+def prep_function():
+	"""A cold start setup process for cloud functions
+
+
+		Returns:
+			service (STRING): name of service
+			project_id (STRING): name of GCP project
+			stage (STRING): Enviorment stage
+
+	"""
+	setupLogger()
+	service = os.environ.get('SERVICE', 'MCGMT')
+	stage = os.environ.get('stage', 'dev')
+	project_id = get_project_id()
+	logging.info(f"Project: {project_id}  Stage: {stage}")
+	return service, project_id, stage
