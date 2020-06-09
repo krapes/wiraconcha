@@ -122,12 +122,12 @@ class Execution():
 						"error": json.dumps(error),
 						"sql": self.master_sql}
 				pubsub_helper.publishMessage(self.publisher, self.topic_path, data)
-				logging.critical("Published to {} event_data: {}".format(self.topic_path,
+				logging.critical("Published to {} event_data: {}".format(self.topic_path, data))
 			else:
 				message = f"Table {self.key} has an unmanageable error."
 				logging.critical(message)
 				logging.error(message + ' ' + str(self.jobObject.error_result))
-				gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)																data))
+				gcp_helper.raise_bug_error(self.jobObject.error_result, message=message)
 
 		try:
 			self.wait_running()
