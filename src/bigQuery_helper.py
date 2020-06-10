@@ -211,7 +211,7 @@ def clearDatasets(datasets, exclude=[]):
 	"""
 	for dataset in datasets:
 		acutal_tables = list(client.list_tables(dataset.dataset_id))
-		tables = [t for t in acutal_tables if t not in exclude]
+		tables = [t for t in acutal_tables if t.table_id not in exclude]
 		for table in tables:
 			table_ref = client.dataset(dataset.dataset_id).table(table.table_id)
 			client.delete_table(table_ref)
